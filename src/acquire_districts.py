@@ -7,14 +7,15 @@ geopandas/shapely, poppler's `pdftotext` and a Python that can import them.
 Raw inputs (download manually, put them in one folder, pass it as argv[1]):
   * Redistricting Data Hub change reports (PDF) for Utah and Florida:
       ut_cong_120_district_changes.pdf, fl_cong_120_district_changes.pdf
-  * RDH plan shapefiles (Utah and Florida pages on redistrictingdatahub.org):
-      - Utah old plan: 2021 Adopted Congressional Plan (Utah Legislative Redistricting Committee, uploaded
-        7 December 2021): ut_cong_2021/ut_cong_2021.shp
-      - Utah new plan: 2025 Congressional Districts Approved Plan (Utah SGID, uploaded 12 November 2025):
+  * RDH plan shapefiles (Utah and Florida pages on redistrictingdatahub.org). RDH retrieved each from the
+    publisher named below and re-hosted it without modifying the data:
+      - Utah old plan: 2021 Adopted Congressional Plan (Utah Legislative Redistricting Committee,
+        retrieved by RDH 30 November 2021): ut_cong_2021/ut_cong_2021.shp
+      - Utah new plan: 2025 Congressional Districts Approved Plan (Utah SGID, retrieved by RDH 8 December 2025):
         ut_cong_adopted_2025/us_congress_districts_2026_to_2032.shp
-      - Florida old plan: Congressional Districts Plan Approved 2022 (Florida Redistricting 2022, uploaded
-        25 April 2022): fl_cong_adopted_2022/P000C0109.shp
-      - Florida new plan: 2026 Congressional Districts Approved Plan (Florida Senate, uploaded 30 April 2026):
+      - Florida old plan: Congressional Districts Plan Approved 2022 (Florida Redistricting 2022,
+        retrieved by RDH 25 April 2022): fl_cong_adopted_2022/P000C0109.shp
+      - Florida new plan: 2026 Congressional Districts Approved Plan (Florida Senate, retrieved by RDH 30 April 2026):
         fl_cong_adopted_2026/EOGPCRP2026/EOGPCRP2026.shp
   * Census cartographic boundary geodatabase cb_2025_us_all_5m.gdb
       (layer cb_2025_us_state_5m)

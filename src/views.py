@@ -105,7 +105,7 @@ def _state_map_figure(frame: pd.DataFrame, geo: dict, selected_fips: str | None)
         if fips in unused:
             r = rows.loc[fips]
             return f"<b>{r['state_name']}</b><br>{r['reason']}<br>{r['map_status']}<br>Not used in 2026: no seat change counted"
-        return f"<b>{names[fips]}</b><br>No mid-decade map change in Ballotpedia's table"
+        return f"<b>{names[fips]}</b><br>No mid-cycle map change in Ballotpedia's table"
 
     fig = go.Figure()
     for key in ("other", "unused", "zero", "loss", "gain"):
@@ -335,6 +335,12 @@ def render_house_context(data: pd.DataFrame, states: pd.DataFrame) -> None:
     second.metric(f"Margin at the start of the {history['congress'].iloc[-3]}, {history['congress'].iloc[-2]} and "
                   f"{history['congress'].iloc[-1]} Congresses", ", ".join(str(m) for m in recent) + " seats")
 
+    st.markdown(
+        f"**Takeaway:** The majority margin has been narrow in each of the last three Congresses "
+        f"({', '.join(str(m) for m in recent)} seats) and is {abs(current_margin)} seats now, "
+        "so any partisan advantage could help to maintain a majority in the House."
+    )
+
     st.caption(
         "Independents and vacant seats are shown separately, so the margin uses Democratic and Republican seats only. "
         "Earlier Congresses show seats at the start of each Congress."
@@ -355,7 +361,7 @@ def render_house_context(data: pd.DataFrame, states: pd.DataFrame) -> None:
 
 
 def render_state_map(data: pd.DataFrame, geo: dict) -> None:
-    st.header("Projections for House seat gains in states that redrew their district maps")
+    st.header("Projections for House seat gains in states that redrew their district maps mid-cycle")
     st.caption("Unit: net change in Democratic House seats (projected). Positive = Democratic gain, negative = Republican gain.")
     st.caption(f"{DATE_LABEL}: {_latest(data, 'status_as_of')} (Ballotpedia's status date)")
 
@@ -424,11 +430,22 @@ def render_state_map(data: pd.DataFrame, geo: dict) -> None:
                 chosen = st.session_state.get("state_inspect")
                 _state_panel(filtered[filtered["state_name"] == chosen].iloc[0] if chosen else None)
 
-            st.caption("Blue: Democrats projected to gain seats. Red: Republicans projected to gain seats (net). White: no mid-decade "
+            st.caption("Blue: Democrats projected to gain seats. Red: Republicans projected to gain seats (net). White: no mid-cycle "
                        "map change in Ballotpedia's table"
                        + (f"; tan: map enacted or proposed but not used in 2026 ({', '.join(filtered[filtered['used_in_2026'] != 'true']['state_name'])})."
                           if (filtered["used_in_2026"] != "true").any() else ".")
                        + f" The number on a state is the projected net change in Democratic seats. {MAP_NOTE}")
+
+            if net < 0:
+                lean = f"a net advantage for Republicans (Republicans +{-net} seats)"
+            elif net > 0:
+                lean = f"a net advantage for Democrats (Democrats +{net} seats)"
+            else:
+                lean = "no net advantage for either party"
+            st.markdown(
+                f"**Takeaway:** Based on the current snapshot, mid-cycle redistricting projects {lean} "
+                f"across the {len(in_use)} states with new maps in use. These are projections, not results."
+            )
 
         with rest:
             if net < 0:
@@ -467,7 +484,7 @@ def render_state_map(data: pd.DataFrame, geo: dict) -> None:
             "- **Net seat change.** Reported Republican gains reflect the inverse of the projected Democratic net change. "
             "Vacancies, independents, and third parties are not modelled.\n"
             "- **District boundaries can still change.** Ongoing litigation and legislative actions may alter district maps after the date of the snapshot used.\n"
-            "- **Mid-decade restructuring cases only.** States without mid-decade changes are shown in white and excluded from the analysis.\n"
+            "- **Mid-cycle restructuring cases only.** States without mid-cycle changes are shown in white and excluded from the analysis.\n"
             "- **Missouri and Virginia** show no projected seat change because their revised district maps are not expected to be used in the 2026 cycle.\n"
             "- **Seat projections do not measure competitiveness.** Changes in projected seat totals do not reflect the actual competition dynamics or voter turnout."
         )
@@ -578,10 +595,19 @@ def render_district_overlay(data: pd.DataFrame, geo: dict, states: pd.DataFrame)
                 )
     st.caption(MAP_NOTE)
 
+    if {"Utah", "Florida"} <= set(projected.dropna().index):
+        ut, fl = int(projected["Utah"]), int(projected["Florida"])
+        st.markdown(
+            "**Takeaway:** Utah and Florida illustrate contrasting cases of how redistricting potentially advantages a party: "
+            f"Ballotpedia projects a net change of {_signed(ut)} Democratic seats in Utah and {_signed(fl)} in Florida."
+        )
+
     st.caption(
         f"Sources: Redistricting Data Hub, [{RDH_UTAH_TITLE}]({RDH_UTAH_URL}) and [{RDH_FLORIDA_TITLE}]({RDH_FLORIDA_URL}) (change reports and plan shapefiles; both retrieved 2026-10-10). Used under RDH's "
-        "noncommercial, nonpartisan terms of use with credit; district outlines come from the plan shapefiles "
-        "distributed by RDH and are simplified for display. Seat projections: Ballotpedia, "
+        "noncommercial, nonpartisan terms of use with credit. District outlines are plan shapefiles published by the "
+        "Utah Legislative Redistricting Committee (2021 plan) and Utah SGID (2025 plan), and by Florida Redistricting 2022 "
+        "(2022 plan) and the Florida Senate (2026 plan), re-hosted unmodified by RDH and simplified here for display. "
+        "Seat projections: Ballotpedia, "
         f"[{BALLOTPEDIA_TITLE}]({BALLOTPEDIA_URL})."
     )
     with st.expander("What this does not show"):
