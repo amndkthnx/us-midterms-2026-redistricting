@@ -36,8 +36,16 @@ def data_path(sample_name: str, processed_name: str) -> Path:
 st.set_page_config(page_title="Redistricting and the 2026 US midterms", layout="wide")
 st.title("Redistricting and the 2026 US House midterms")
 st.write(
+    "Traditionally, U.S. states redraw congressional district boundaries after each Census in a ten-year cycle. "
+    "However, some states have recently adopted mid-cycle redistricting plans to the potential benefit of one political party. "
+    "With the majority margin at 10 seats or fewer in each of the last three Congresses, these increasingly narrow margins have "
+    "intensified the political significance of redistricting. As noted by Harvard Kennedy School scholar "
+    "[Benjamin Schneer](https://www.hks.harvard.edu/faculty-research/policy-topics/democracy-governance/explainer-whats-happening-gerrymandering-united)"
+    ": \"any partisan advantage will help to maintain a majority in the House\"."
+)
+st.write(
     "**Question:** "
-    "To what extent could mid-decade redistricting ahead of the 2026 US midterm elections shift the balance of power "
+    "To what extent could mid-cycle redistricting ahead of the 2026 US midterm elections shift the balance of power "
     "in the US House of Representatives? How is this projected to affect representation in states that redrew district boundaries, and what does this look like in practice?"
 )
 st.caption(

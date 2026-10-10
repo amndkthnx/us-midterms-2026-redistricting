@@ -38,7 +38,7 @@ The transform writes only the two declared processed outputs. There is no networ
 
 | File | What it is |
 | --- | --- |
-| `data/sample_states.csv` / `processed_states.csv` | 11 states from Ballotpedia's mid-decade redistricting table (status as of 2026-09-28) |
+| `data/sample_states.csv` / `processed_states.csv` | 11 states from Ballotpedia's mid-cycle redistricting table (status as of 2026-09-28) |
 | `data/sample_districts.csv` / `processed_districts.csv` | 64 district rows: Utah (4) and Florida (28), old and new plans, 2024 two-party Democratic share |
 | `data/sample_house.csv` / `processed_house.csv` | 26 rows: party seats at the start of the 95th to 119th Congresses (House Historian, initial election results) plus the current 119th Congress membership (House Press Gallery, page updated 2026-09-02) |
 | `data/us_states.geojson` | State outlines (50 states + DC), simplified from the Census cartographic boundary file |
@@ -52,18 +52,18 @@ All sources were downloaded or manually compiled; `src/acquire_districts.py` doc
 
 1. **Ballotpedia**, [Redistricting ahead of the 2026 elections](https://ballotpedia.org/Redistricting_ahead_of_the_2026_elections): status table transcribed to `sample_states.csv`; Missouri's row follows Ballotpedia's Missouri page. `net_change_dem` is Ballotpedia's "potential result", expressed as a net change in Democratic seats. Missouri (enacted, not used in 2026) and Virginia (blocked by court) have no counted change.
 2. **U.S. House Office of the Historian**, [Party Divisions of the House of Representatives](https://history.house.gov/Institution/Party-Divisions/Party-Divisions/): seats per party for the 95th to 119th Congresses, transcribed by hand; vacant seats are 435 minus the party counts (the 116th and 117th each began with one seat lacking a certificate). **U.S. House Press Gallery**, [Party breakdown](https://pressgallery.house.gov/member-data/party-breakdown): current membership. Neither page states reuse terms; credit and links are shown beside the view.
-3. **Redistricting Data Hub** ([Utah](https://redistrictingdatahub.org/state/utah/) and [Florida](https://redistrictingdatahub.org/state/florida/) pages): *Congressional Redistricting Change Analysis* PDFs (119th vs 120th Congress plans) for the district shares, and the following plan shapefiles for the district outlines. Utah: *2021 Adopted Congressional Plan* (Utah Legislative Redistricting Committee, uploaded 7 December 2021) as the old plan and *2025 Congressional Districts Approved Plan* (Utah SGID, uploaded 12 November 2025) as the new plan. Florida: *Congressional Districts Plan Approved 2022* (Florida Redistricting 2022, uploaded 25 April 2022) as the old plan and *2026 Congressional Districts Approved Plan* (Florida Senate, uploaded 30 April 2026) as the new plan.
+3. **Redistricting Data Hub** ([Utah](https://redistrictingdatahub.org/state/utah/) and [Florida](https://redistrictingdatahub.org/state/florida/) pages): *Congressional Redistricting Change Analysis* PDFs (119th vs 120th Congress plans) for the district shares, and the plan shapefiles for the district outlines. RDH retrieved the shapefiles from the bodies that published them and re-hosted them without modifying the data (the outlines are simplified for display in this dashboard). Utah: *2021 Adopted Congressional Plan* (Utah Legislative Redistricting Committee, retrieved by RDH 30 November 2021) as the old plan and *2025 Congressional Districts Approved Plan* (Utah SGID, retrieved by RDH 8 December 2025) as the new plan. Florida: *Congressional Districts Plan Approved 2022* (Florida Redistricting 2022, retrieved by RDH 25 April 2022) as the old plan and *2026 Congressional Districts Approved Plan* (Florida Senate, retrieved by RDH 30 April 2026) as the new plan.
 4. **U.S. Census Bureau**, 2025 Cartographic Boundary Files, States (1:5,000,000) for state outlines.
 
 ## Licences and credit
 
 - Ballotpedia: text and tables under the GNU Free Documentation License; credit and link are shown beside the view.
-- Redistricting Data Hub: use is noncommercial and nonpartisan, with credit (shown beside the view). Free registration is required to download the data
+- Redistricting Data Hub: use is noncommercial and nonpartisan, with credit (shown beside the view). Free registration is required to download the data. The original publishers of the plan shapefiles (listed above) are credited beside the view; their own terms were not checked separately.
 - U.S. Census Bureau: public domain.
 
 ## Limitations
 
-- The House Historian's counts are initial election results: later deaths, resignations, special elections and party switches are not in the historical bars. The Press Gallery page does not say which caucus the independent belongs to, so the independent is shown on its own.
+- The House Historian's counts are initial election results: later deaths, resignations, special elections and party switches are not in the historical line chart. The Press Gallery page does not say which caucus the independent belongs to, so the independent is shown on its own.
 - Ballotpedia's projection method is not fully documented and may mix presidential-vote and current-delegation assumptions.
 - District numbers in the old and new plans are not comparable.
 - Boundaries are simplified for display.
