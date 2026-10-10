@@ -1,0 +1,386 @@
+schema_version: 2
+dashboard:
+  title: Redistricting and the 2026 US House midterms
+  subject: usa_elections_2026
+  question: To what extent could mid-decade redistricting ahead of the 2026 US midterm elections shift the balance of power in the US House of Representatives? How is this projected to affect representation in states that redrew district boundaries, and what does this look like in practice?
+  audience: Non-specialist observers interested in the 2026 US midterm elections who want to understand the potential electoral impacts of redistricting
+  entrypoint: app.py
+  pages: []
+  sample_environment_variable: DASHBOARD_SAMPLE_MODE
+sources:
+- id: ballotpedia_redistricting
+  publisher: Ballotpedia
+  title: Redistricting ahead of the 2026 elections
+  url: https://ballotpedia.org/Redistricting_ahead_of_the_2026_elections
+  licence: Ballotpedia text and tables are published under the GNU Free Documentation License; facts are manually compiled from the page with credit and link
+  retrieved: '2026-09-28'
+  cadence: Updated by Ballotpedia as maps change (litigation, enactment)
+  status: snapshot
+  notes: State table manually compiled from Ballotpedia (status as of 2026-09-28). Missouri's row links to Ballotpedia's Missouri page. Ballotpedia's net seat change is a projection that compares the new map's expected outcome with the current delegation; it is not an election result. In its "New maps enacted before the 2026 elections" section, Ballotpedia shades the new districts by 2024 presidential results; its seat projections appear to rest on that basis, but the method for the projected net change is not documented on the page.
+- id: rdh_utah
+  publisher: Redistricting Data Hub
+  title: Redistricting Data Hub - Utah
+  url: https://redistrictingdatahub.org/state/utah/
+  licence: Redistricting Data Hub terms of use (noncommercial, nonpartisan use with credit); not re-licensed here
+  retrieved: '2026-10-10'
+  cadence: Published once per adopted plan
+  status: snapshot
+  notes: Per-district two-party Democratic share of the 2024 presidential vote (Harris vs Trump) under the old and new plans extracted from the 119th vs 120th Congress plans change report on the RDH Utah page. District outlines come from two plan shapefiles on the same RDH page and are simplified for display: the 2021 Adopted Congressional Plan (Utah Legislative Redistricting Committee, uploaded 7 December 2021; old plan) and the 2025 Congressional Districts Approved Plan (Utah SGID, uploaded 12 November 2025; new plan).
+- id: rdh_florida
+  publisher: Redistricting Data Hub
+  title: Redistricting Data Hub - Florida
+  url: https://redistrictingdatahub.org/state/florida/
+  licence: Redistricting Data Hub terms of use (noncommercial, nonpartisan use with credit); not re-licensed here
+  retrieved: '2026-10-10'
+  cadence: Published once per adopted plan
+  status: snapshot
+  notes: Per-district two-party Democratic share of the 2024 presidential vote (Harris vs Trump) under the old and new plans extracted from the 119th vs 120th Congress plans change report on the RDH Florida page. District outlines come from two plan shapefiles on the same RDH page and are simplified for display: the Congressional Districts Plan Approved 2022 (Florida Redistricting 2022, uploaded 25 April 2022; old plan) and the 2026 Congressional Districts Approved Plan (Florida Senate, uploaded 30 April 2026; new plan).
+- id: house_historian_party_divisions
+  publisher: U.S. House Office of the Historian
+  title: Party Divisions of the House of Representatives, 1789 to Present
+  url: https://history.house.gov/Institution/Party-Divisions/Party-Divisions/
+  licence: Published by the U.S. House of Representatives, no reuse terms stated on the page. Seat counts are manually compiled from the page with credit and link
+  retrieved: '2026-10-10'
+  cadence: Updated for each new Congress
+  status: snapshot
+  notes: Democratic, Republican and independent seats per Congress (95th to 119th, 1977 to 2027) as of the initial election results; later deaths, resignations, special elections and party switches are not included. Vacant seats are 435 minus the party counts (116th and 117th each began with one seat without a certificate).
+- id: house_press_gallery_party_breakdown
+  publisher: U.S. House Press Gallery
+  title: Party breakdown
+  url: https://pressgallery.house.gov/member-data/party-breakdown
+  licence: Published by the U.S. House of Representatives, no reuse terms stated on the page. Seat counts are manually compiled from the page with credit and link
+  retrieved: '2026-10-10'
+  cadence: Updated when member departures are read on the House floor
+  status: snapshot
+  notes: Current 119th Congress membership as shown on the page (last updated 2026-09-02) - 214 Democrats, 218 Republicans, 1 independent and 2 vacancies. The page does not say which caucus the independent belongs to, so the dashboard shows the independent separately.
+- id: census_cartographic_boundaries
+  publisher: U.S. Census Bureau
+  title: 2025 Cartographic Boundary Files, States (1:5,000,000)
+  url: https://www.census.gov/geographies/mapping-files/time-series/geo/cartographic-boundary.html
+  licence: US Government work, public domain
+  retrieved: '2026-10-10'
+  cadence: Annual
+  status: snapshot
+  notes: State outlines for the choropleth, simplified and reprojected to WGS84 (data/us_states.geojson). They carry no data of their own.
+datasets:
+- id: state_redistricting
+  source_ids:
+  - ballotpedia_redistricting
+  sample: data/sample_states.csv
+  processed_output: data/processed_states.csv
+  format: csv
+  date_column: status_as_of
+  primary_key:
+  - state_abbr
+  minimum_rows: 10
+  latest_observation: '2026-09-28'
+  columns:
+    state_name:
+      type: string
+      role: geography
+      nullable: false
+      allowed_values: [Alabama, California, Florida, Louisiana, Missouri, North Carolina, Ohio, Tennessee, Texas, Utah, Virginia]
+    state_abbr:
+      type: string
+      role: identifier
+      nullable: false
+      allowed_values: [AL, CA, FL, LA, MO, NC, OH, TN, TX, UT, VA]
+    state_fips:
+      type: string
+      role: identifier
+      nullable: false
+      allowed_values: ['01', '06', '12', '22', '29', '37', '39', '47', '48', '49', '51']
+    total_seats:
+      type: integer
+      role: measure
+      nullable: false
+      unit: House seats
+      minimum: 1
+      maximum: 60
+    reason:
+      type: string
+      role: dimension
+      nullable: false
+      allowed_values: [Changed due to litigation, Required by law to redistrict, Voluntary redistricting]
+    method:
+      type: string
+      role: dimension
+      nullable: true
+      allowed_values: [Commission, Legislature-dominant]
+    map_status:
+      type: string
+      role: dimension
+      nullable: false
+      allowed_values: [New map in effect, Enacted but not in use, Blocked by court]
+    used_in_2026:
+      type: boolean
+      role: dimension
+      nullable: false
+    action_date:
+      type: date
+      role: time
+      nullable: true
+      date_minimum: '2025-01-01'
+      date_maximum: '2026-12-31'
+    rep_seats_old:
+      type: integer
+      role: measure
+      nullable: false
+      unit: House seats
+      minimum: 0
+      maximum: 60
+    dem_seats_old:
+      type: integer
+      role: measure
+      nullable: false
+      unit: House seats
+      minimum: 0
+      maximum: 60
+    vacant_old:
+      type: integer
+      role: measure
+      nullable: false
+      unit: House seats
+      minimum: 0
+      maximum: 60
+    net_change_dem:
+      type: integer
+      role: measure
+      nullable: true
+      unit: House seats
+      minimum: -20
+      maximum: 20
+    source_url:
+      type: string
+      role: dimension
+      nullable: false
+    status_as_of:
+      type: date
+      role: time
+      nullable: false
+      date_minimum: '2026-01-01'
+      date_maximum: '2026-12-31'
+- id: district_shares
+  source_ids:
+  - rdh_utah
+  - rdh_florida
+  sample: data/sample_districts.csv
+  processed_output: data/processed_districts.csv
+  format: csv
+  date_column: measure_date
+  primary_key:
+  - state_abbr
+  - plan
+  - district
+  minimum_rows: 10
+  latest_observation: '2024-11-05'
+  columns:
+    state_name:
+      type: string
+      role: geography
+      nullable: false
+      allowed_values: [Utah, Florida]
+    state_abbr:
+      type: string
+      role: identifier
+      nullable: false
+      allowed_values: [UT, FL]
+    state_fips:
+      type: string
+      role: identifier
+      nullable: false
+      allowed_values: ['49', '12']
+    plan:
+      type: string
+      role: dimension
+      nullable: false
+      allowed_values: [old, new]
+    plan_label:
+      type: string
+      role: dimension
+      nullable: false
+      allowed_values: [2021 enacted map, 2025 court-ordered map, 2022 enacted map, 2026 enacted map]
+    district:
+      type: string
+      role: identifier
+      nullable: false
+    dem_share_2party_2024:
+      type: number
+      role: measure
+      nullable: false
+      unit: percent
+      minimum: 0
+      maximum: 100
+    measure_date:
+      type: date
+      role: time
+      nullable: false
+      date_minimum: '2024-11-05'
+      date_maximum: '2024-11-05'
+    source:
+      type: string
+      role: dimension
+      nullable: false
+- id: house_composition
+  source_ids:
+  - house_historian_party_divisions
+  - house_press_gallery_party_breakdown
+  sample: data/sample_house.csv
+  processed_output: data/processed_house.csv
+  format: csv
+  date_column: as_of
+  primary_key:
+  - congress_number
+  - row_type
+  minimum_rows: 10
+  latest_observation: '2026-09-02'
+  columns:
+    congress:
+      type: string
+      role: dimension
+      nullable: false
+    congress_number:
+      type: integer
+      role: identifier
+      nullable: false
+      minimum: 95
+      maximum: 119
+    start_year:
+      type: integer
+      role: time
+      nullable: false
+      minimum: 1977
+      maximum: 2025
+    row_type:
+      type: string
+      role: dimension
+      nullable: false
+      allowed_values: [start_of_congress, current]
+    total_seats:
+      type: integer
+      role: measure
+      nullable: false
+      unit: House seats
+      minimum: 435
+      maximum: 435
+    democrats:
+      type: integer
+      role: measure
+      nullable: false
+      unit: House seats
+      minimum: 0
+      maximum: 435
+    republicans:
+      type: integer
+      role: measure
+      nullable: false
+      unit: House seats
+      minimum: 0
+      maximum: 435
+    independents:
+      type: integer
+      role: measure
+      nullable: false
+      unit: House seats
+      minimum: 0
+      maximum: 435
+    vacancies:
+      type: integer
+      role: measure
+      nullable: false
+      unit: House seats
+      minimum: 0
+      maximum: 435
+    as_of:
+      type: date
+      role: time
+      nullable: false
+      date_minimum: '1977-01-01'
+      date_maximum: '2026-12-31'
+    source:
+      type: string
+      role: dimension
+      nullable: false
+views:
+- id: house_context
+  dataset_id: house_composition
+  page: app.py
+  title: In each of the last three Congresses, the House majority was 10 seats or fewer
+  unit: House seats
+  source_ids:
+  - house_historian_party_divisions
+  - house_press_gallery_party_breakdown
+  outputs:
+  - chart
+  - metric
+- id: state_map
+  dataset_id: state_redistricting
+  page: app.py
+  title: Projections for House seat gains in states that redrew their district maps
+  unit: net change in Democratic House seats (projected)
+  source_ids:
+  - ballotpedia_redistricting
+  - census_cartographic_boundaries
+  outputs:
+  - chart
+  - metric
+  - table
+  - download
+- id: district_overlay
+  dataset_id: district_shares
+  page: app.py
+  title: District-level view of potential seat changes due to redistricting in Utah and Florida
+  unit: percent (two-party Democratic share of the 2024 presidential vote)
+  source_ids:
+  - rdh_utah
+  - rdh_florida
+  - ballotpedia_redistricting
+  outputs:
+  - chart
+  - metric
+- id: district_table
+  dataset_id: district_shares
+  page: app.py
+  title: District data for the example states
+  unit: percent (two-party Democratic share of the 2024 presidential vote)
+  source_ids:
+  - rdh_utah
+  - rdh_florida
+  - ballotpedia_redistricting
+  controls:
+  - key: district_state_filter
+    type: multiselect
+    label: States
+    default_value:
+    - Utah
+    - Florida
+    test_value:
+    - Utah
+    expected_text: 'Selected states: Utah'
+    empty_test_value: []
+    empty_expected_text: No districts match the selected filters.
+    filter:
+      column: state_name
+      operator: isin
+  outputs:
+  - table
+  - download
+pipeline:
+  acquisition_method: manual
+  acquisition_path: src/acquire_districts.py
+  transform_command:
+  - python
+  - -m
+  - src.data
+  download_declared: true
+  download_label: Download filtered data
+  date_label: Based on snapshots on
+topic_integrity:
+  office: U.S. House of Representatives (435 voting seats; all seats up for election on 3 November 2026)
+  geography: Congressional districts (and the 435-seat House as a whole for the context section). The state map covers the 11 states in Ballotpedia's mid-decade redistricting table; the district overlay covers Utah (4 districts) and Florida (28 districts), old plan vs new plan.
+  data_status: Snapshot. State table reflects Ballotpedia as of 2026-09-28 and maps can still change through litigation. No 2026 votes have been cast or counted in these data; all seat changes are projections, not results.
+  timestamp_timezone: Calendar dates only, no clock times. Action dates are US dates as reported by Ballotpedia; no timezone conversion applied. Retrieval dates are the dates the analyst downloaded the files (Sydney time).
+  results_used: true
+  result_authority: 2024 presidential vote (Harris vs Trump, two-party share) aggregated to districts by the Redistricting Data Hub for both the old and new plans. No 2024 or 2026 House race results are used. The upstream state sources behind RDH's aggregation were not independently checked.
+  certification_status: Not checked. The dashboard relies on RDH's published figures and does not verify them against state certificates.
+  projection_basis: Ballotpedia's net seat change is its own estimate comparing the expected outcome under the new map with the current delegation. Its exact method was not verified by this dashboard and may mix presidential-vote-based and current-delegation assumptions. Ballotpedia's map shades the new districts by 2024 presidential results, so the projections appear to rest on the 2024 presidential vote, but this is not stated for the net change.
