@@ -1,0 +1,12 @@
+state_name,state_abbr,state_fips,total_seats,reason,method,map_status,used_in_2026,action_date,rep_seats_old,dem_seats_old,vacant_old,net_change_dem,source_url,status_as_of
+Alabama,AL,01,7,Changed due to litigation,Legislature-dominant,New map in effect,true,,5,2,0,-1,https://ballotpedia.org/Redistricting_ahead_of_the_2026_elections,2026-09-28
+California,CA,06,52,Voluntary redistricting,Commission,New map in effect,true,2025-11-04,9,43,0,5,https://ballotpedia.org/Redistricting_ahead_of_the_2026_elections,2026-09-28
+Florida,FL,12,28,Voluntary redistricting,Legislature-dominant,New map in effect,true,2026-05-04,20,8,0,-4,https://ballotpedia.org/Redistricting_ahead_of_the_2026_elections,2026-09-28
+Louisiana,LA,22,6,Changed due to litigation,Legislature-dominant,New map in effect,true,2026-05-29,4,2,0,-1,https://ballotpedia.org/Redistricting_ahead_of_the_2026_elections,2026-09-28
+Missouri,MO,29,8,Voluntary redistricting,Legislature-dominant,Enacted but not in use,false,2025-09-28,6,2,0,,https://ballotpedia.org/Redistricting_in_Missouri_ahead_of_the_2026_elections,2026-09-28
+North Carolina,NC,37,14,Voluntary redistricting,Legislature-dominant,New map in effect,true,2025-10-22,10,4,0,-1,https://ballotpedia.org/Redistricting_ahead_of_the_2026_elections,2026-09-28
+Ohio,OH,39,15,Required by law to redistrict,Legislature-dominant,New map in effect,true,2025-10-31,10,5,0,-2,https://ballotpedia.org/Redistricting_ahead_of_the_2026_elections,2026-09-28
+Tennessee,TN,47,9,Voluntary redistricting,Legislature-dominant,New map in effect,true,2026-05-07,8,1,0,-1,https://ballotpedia.org/Redistricting_ahead_of_the_2026_elections,2026-09-28
+Texas,TX,48,38,Voluntary redistricting,Legislature-dominant,New map in effect,true,,25,12,1,-5,https://ballotpedia.org/Redistricting_ahead_of_the_2026_elections,2026-09-28
+Utah,UT,49,4,Changed due to litigation,Legislature-dominant,New map in effect,true,,4,0,0,1,https://ballotpedia.org/Redistricting_ahead_of_the_2026_elections,2026-09-28
+Virginia,VA,51,11,Voluntary redistricting,,Blocked by court,false,,5,6,0,,https://ballotpedia.org/Redistricting_ahead_of_the_2026_elections,2026-09-28
